@@ -324,6 +324,11 @@ module.exports.settings = (function() {
       }
     },
     // setting objects
+    cd: {
+      brush: {
+        enabled: setting('cd.brush', SettingType.TOGGLE, false, $('#setting-cd-brush-enabled'))
+      }
+    },
     ui: {
       language: {
         override: setting('ui.language.override', SettingType.SELECT, '', $('#setting-ui-language-override'))
@@ -372,7 +377,7 @@ module.exports.settings = (function() {
       }
     },
     audio: {
-      enable: setting('audio.enable', SettingType.TOGGLE, true, $('#setting-audio-enable')),
+      enable: setting('audio.enable', SettingType.TOGGLE, false, $('#setting-audio-enable')),
       alert: {
         src: setting('audio.alert.src', SettingType.TEXT, '', $('#setting-audio-alert-src')),
         volume: setting('audio.alert.volume', SettingType.RANGE, 1, $('#setting-audio-alert-volume'))

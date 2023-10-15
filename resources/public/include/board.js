@@ -19,6 +19,7 @@ const { haveImageRendering, haveZoomRendering } = flags;
 // this object holds all board information and is responsible of rendering the board
 const board = (function() {
   const self = {
+    isHoldingClick: false,
     elements: {
       board: $('#board'),
       board_render: null, // populated on init based on rendering method
@@ -331,10 +332,23 @@ const board = (function() {
             y: clientY
           });
         }
+        if ((event.button === 0)) { // TODO: Touchscreen support
+          self.isHoldingClick = true;
+          if (!self.allowDrag) {
+            const pos = self.fromScreen(clientX, clientY);
+            place.place(pos.x, pos.y);
+          }
+        }
         downStart = Date.now();
       }
 
       function handleInputMove(event) {
+        console.warn('isHoldingClick', self.isHoldingClick);
+        if (!self.allowDrag && self.isHoldingClick && settings.cd.brush.enabled.get()) {
+          const pos = self.fromScreen(event.clientX, event.clientY);
+          place.place(pos.x, pos.y);
+        }
+
         if (self.holdTimer.id === -1) return;
         let clientX = -1;
         let clientY = -1;
@@ -369,15 +383,18 @@ const board = (function() {
         }
         const dx = Math.abs(downX - clientX);
         const dy = Math.abs(downY - clientY);
-        if ((event.button === 0 || touch) && downDelta < 500) {
-          let pos;
-          if (!self.allowDrag && dx < 25 && dy < 25) {
-            pos = self.fromScreen(downX, downY);
-            place.place(pos.x, pos.y);
-          } else if (dx < 5 && dy < 5) {
-            pos = self.fromScreen(clientX, clientY);
-            place.place(pos.x, pos.y);
+        if ((event.button === 0 || touch)) {
+          if (downDelta < 500) {
+            let pos;
+            if (!self.allowDrag && dx < 25 && dy < 25) {
+              pos = self.fromScreen(downX, downY);
+              place.place(pos.x, pos.y);
+            } else if (dx < 5 && dy < 5) {
+              pos = self.fromScreen(clientX, clientY);
+              place.place(pos.x, pos.y);
+            }
           }
+          self.isHoldingClick = false;
         }
         downDelta = 0;
         if (event.button != null) {
