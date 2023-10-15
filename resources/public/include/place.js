@@ -128,6 +128,11 @@ module.exports.place = (function() {
       if (settings.ui.cursor.enable.get()) {
         self.toggleCursor(true);
       }
+      if (settings.cd.brush.enabled.get()) {
+        $('#cursor-brush-warning').show();
+      } else {
+        $('#cursor-brush-warning').hide();
+      }
     },
     setNumberedPaletteEnabled: function(shouldBeNumbered) {
       self.elements.palette[0].classList.toggle('no-pills', !shouldBeNumbered);
@@ -206,6 +211,7 @@ module.exports.place = (function() {
       user = require('./user').user;
       self.toggleReticule(false);
       self.toggleCursor(false);
+      $('#cursor-brush-warning').hide();
       document.body.classList.remove('undo-visible');
       self.elements.undo.removeClass('open');
       board.getRenderBoard().on('pointermove mousemove', function(evt) {
