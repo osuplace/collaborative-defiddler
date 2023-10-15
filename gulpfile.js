@@ -48,6 +48,12 @@ const SOURCE_FILES = [
 function lint() {
   return src(SOURCE_FILES)
     .pipe(eslint())
+    .pipe(eslint.result((e) => {
+      e.messages.forEach((m) => { 
+        console.log('Message in', e.filePath, ':')
+        console.log(m)
+      });
+    }))
     .pipe(eslint.failAfterError());
 }
 
